@@ -25,7 +25,7 @@ export async function initPixi(canvasContainer) {
       }
       canvasContainer.appendChild(pixiApp.canvas);
     }
-    pixiApp.renderer.resize(3000, 2000); // Forces resize in case old HMR instance was stuck
+    pixiApp.renderer.resize(1600, 1000); // Forces resize in case old HMR instance was stuck
     return pixiApp;
   }
 
@@ -33,8 +33,8 @@ export async function initPixi(canvasContainer) {
   window.__PIXI_APP__ = pixiApp;
   
   await pixiApp.init({
-    width: 3000,
-    height: 2000,
+    width: 1600,
+    height: 1000,
     backgroundColor: 0x1A1E29,
     resolution: window.devicePixelRatio || 1,
     autoDensity: true,

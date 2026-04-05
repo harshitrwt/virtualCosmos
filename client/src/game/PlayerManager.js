@@ -50,7 +50,12 @@ export function cleanupPlayerManager(fullCleanup = false) {
 }
 
 function handleKeyDown(e) {
-  if (keys.hasOwnProperty(e.key)) keys[e.key] = true;
+  if (keys.hasOwnProperty(e.key)) {
+    keys[e.key] = true;
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
+      e.preventDefault();
+    }
+  }
 }
 
 function handleKeyUp(e) {
@@ -79,8 +84,8 @@ function updateLocalPlayer() {
   if (keys.d || keys.ArrowRight) dx += SPEED;
 
   if (dx !== 0 || dy !== 0) {
-    const w = 3000;
-    const h = 2000;
+    const w = 1600;
+    const h = 1000;
     
     let newX = Math.max(PLAYER_RADIUS, Math.min(w - PLAYER_RADIUS, localPlayer.x + dx));
     let newY = Math.max(PLAYER_RADIUS, Math.min(h - PLAYER_RADIUS, localPlayer.y + dy));

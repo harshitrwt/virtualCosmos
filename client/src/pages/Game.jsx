@@ -81,16 +81,22 @@ export default function Game() {
   if (!user) return null;
 
   return (
-    <div className="fixed inset-0 overflow-auto bg-[#1A1E29]">
-      <div 
-        ref={canvasRef} 
-        className="relative w-[3000px] h-[2000px] pointer-events-auto"
-      />
+    <div className="fixed inset-0 bg-[#1A1E29]">
+      <div className="absolute inset-0 overflow-auto">
+        <div 
+          ref={canvasRef} 
+          className="relative w-[1600px] h-[1000px] pointer-events-auto"
+        />
+      </div>
       
-      <HUD onlineCount={onlineCount} username={user.username} onLogout={handleLogout} />
+      <div className="fixed top-0 left-0 w-full z-40 pointer-events-none">
+        <div className="pointer-events-auto">
+          <HUD onlineCount={onlineCount} username={user.username} onLogout={handleLogout} />
+        </div>
+      </div>
       
       {connectedUser && (
-        <div className="absolute top-0 right-0 h-full w-[350px] z-50 pointer-events-auto shadow-[-20px_0_40px_-15px_rgba(0,0,0,0.5)]">
+        <div className="fixed top-0 right-0 h-full w-[350px] z-50 pointer-events-auto shadow-[-20px_0_40px_-15px_rgba(0,0,0,0.5)]">
           <ChatPanel 
             connectedUser={connectedUser} 
             localUserId={user.userId} 
