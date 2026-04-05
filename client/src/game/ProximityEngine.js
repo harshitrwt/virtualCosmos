@@ -1,6 +1,6 @@
 import { joinRoom, leaveRoom } from "../socket/socketClient";
 
-export const PROXIMITY_RADIUS = 150;
+export const PROXIMITY_RADIUS = 70;
 let connectedUserId = null;
 
 function calculateDistance(x1, y1, x2, y2) {

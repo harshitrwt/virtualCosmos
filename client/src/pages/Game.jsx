@@ -41,24 +41,35 @@ export default function Game() {
   useEffect(() => {
     if (!user || !canvasRef.current) return;
 
+    let isMounted = true;
     const setup = async () => {
       await initPixi(canvasRef.current);
+      if (!isMounted) return;
       initPlayerManager(user.userId, setConnectedUser);
       socket.emit('players:request');
     };
     setup();
 
     socket.on("players:update", (playersData) => {
+      if (!isMounted) return;
       setOnlineCount(Object.keys(playersData).length);
       updatePlayers(playersData);
     });
 
     return () => {
+      isMounted = false;
       cleanupPlayerManager();
-      cleanupPixi();
+      // DO NOT call cleanupPixi() here! It causes blank screen on HMR.
       socket.off("players:update");
     };
   }, [user]);
+
+  // Clean up Pixi ONLY when the component is actually unmounted (e.g., logging out)
+  useEffect(() => {
+    return () => {
+      cleanupPixi();
+    };
+  }, []);
 
   const handleLogout = () => {
     disconnectSocket();
@@ -70,10 +81,10 @@ export default function Game() {
   if (!user) return null;
 
   return (
-    <div className="fixed inset-0 overflow-hidden bg-slate-50">
+    <div className="fixed inset-0 overflow-auto bg-[#1A1E29]">
       <div 
         ref={canvasRef} 
-        className="absolute inset-0 w-full h-full pointer-events-auto"
+        className="relative w-[3000px] h-[2000px] pointer-events-auto"
       />
       
       <HUD onlineCount={onlineCount} username={user.username} onLogout={handleLogout} />

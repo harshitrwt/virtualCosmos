@@ -3,13 +3,15 @@ import { pixiApp, obstacles } from "./PixiApp";
 import { emitMove } from "../socket/socketClient";
 import { checkProximity } from "./ProximityEngine";
 
-export const players = new Map();
-const sprites = new Map();
+export const players = window.__PIXI_PLAYERS__ || new Map();
+const sprites = window.__PIXI_SPRITES__ || new Map();
+window.__PIXI_PLAYERS__ = players;
+window.__PIXI_SPRITES__ = sprites;
 let localPlayerId = null;
 let setConnectedUserCallback = null;
 
 let lastMoveTime = 0;
-const MOVE_THROTTLE = 50; // emit 20 times a sec
+const MOVE_THROTTLE = 50; 
 
 const keys = {
   w: false, a: false, s: false, d: false,
@@ -17,7 +19,7 @@ const keys = {
 };
 
 const SPEED = 4;
-const PLAYER_RADIUS = 20;
+const PLAYER_RADIUS = 14;
 
 export function initPlayerManager(userId, onProximityChange) {
   localPlayerId = userId;
@@ -32,16 +34,19 @@ export function initPlayerManager(userId, onProximityChange) {
   }
 }
 
-export function cleanupPlayerManager() {
+export function cleanupPlayerManager(fullCleanup = false) {
   window.removeEventListener("keydown", handleKeyDown);
   window.removeEventListener("keyup", handleKeyUp);
   if (pixiApp) {
     pixiApp.ticker.remove(updateLocalPlayer);
     pixiApp.ticker.remove(interpolateRemotePlayers);
   }
-  players.clear();
-  sprites.forEach(sprite => sprite.destroy(true));
-  sprites.clear();
+  
+  if (fullCleanup) {
+    players.clear();
+    sprites.forEach(sprite => sprite.destroy(true));
+    sprites.clear();
+  }
 }
 
 function handleKeyDown(e) {
@@ -53,20 +58,11 @@ function handleKeyUp(e) {
 }
 
 function checkCollision(x, y) {
+  const buffer = 16; 
   for (const obs of obstacles) {
-    const px = x - PLAYER_RADIUS + 5; // small buffer to ease entering doors
-    const py = y - PLAYER_RADIUS + 5;
-    const pw = PLAYER_RADIUS * 2 - 10;
-    const ph = PLAYER_RADIUS * 2 - 10;
-
-    if (
-      px < obs.x + obs.w &&
-      px + pw > obs.x &&
-      py < obs.y + obs.h &&
-      py + ph > obs.y
-    ) {
-      return true; // Collision
-    }
+    const hitX = (x + buffer > obs.x) && (x - buffer < obs.x + obs.w);
+    const hitY = (y + buffer > obs.y) && (y - buffer < obs.y + obs.h);
+    if (hitX && hitY) return true;
   }
   return false;
 }
@@ -83,8 +79,8 @@ function updateLocalPlayer() {
   if (keys.d || keys.ArrowRight) dx += SPEED;
 
   if (dx !== 0 || dy !== 0) {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
+    const w = 3000;
+    const h = 2000;
     
     let newX = Math.max(PLAYER_RADIUS, Math.min(w - PLAYER_RADIUS, localPlayer.x + dx));
     let newY = Math.max(PLAYER_RADIUS, Math.min(h - PLAYER_RADIUS, localPlayer.y + dy));
@@ -118,7 +114,7 @@ function updateLocalPlayer() {
 }
 
 function interpolateRemotePlayers(time) {
-  const LERP_FACTOR = 0.2; // Smoothness factor
+  const LERP_FACTOR = 0.2; 
   players.forEach((player, id) => {
     if (id !== localPlayerId && player.targetX !== undefined && player.targetY !== undefined) {
       const sprite = sprites.get(id);
@@ -166,15 +162,14 @@ function createPlayerSprite(id, data) {
   container.x = data.x;
   container.y = data.y;
 
-  // Render a fallback initially
   const fallback = new PIXI.Graphics();
-  fallback.circle(0, 0, 20);
+  fallback.circle(0, 0, 14);
   fallback.fill({ color: id === localPlayerId ? 0x60a5fa : 0xf472b6 });
   container.addChild(fallback);
 
   const style = data.avatarStyle || 'avataaars';
   const seed = data.avatarSeed || data.username || 'default';
-  const spriteUrl = `https://api.dicebear.com/9.x/${style}/png?seed=${seed}&size=44`;
+  const spriteUrl = `https://api.dicebear.com/9.x/${style}/png?seed=${seed}&size=32`;
 
   const img = new Image();
   img.crossOrigin = 'anonymous';
@@ -183,12 +178,12 @@ function createPlayerSprite(id, data) {
     try {
       const texture = PIXI.Texture.from(img);
       const sprite = new PIXI.Sprite(texture);
-      sprite.width = 44;
-      sprite.height = 44;
+      sprite.width = 32;
+      sprite.height = 32;
       sprite.anchor.set(0.5);
       
       container.removeChild(fallback);
-      container.addChildAt(sprite, 0); // Behind the text
+      container.addChildAt(sprite, 0);
     } catch(e) {
       console.warn("Could not apply loaded image texture in PixiJS", e);
     }
