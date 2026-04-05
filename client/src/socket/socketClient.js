@@ -5,6 +5,18 @@ export const socket = io("/", {
   autoConnect: false,
 });
 
+export const connectSocket = (token) => {
+  socket.auth = { token };
+  socket.connect();
+};
+
+export const disconnectSocket = () => {
+  if (socket.connected) {
+    socket.emit('player_disconnect');
+    socket.disconnect();
+  }
+};
+
 export const emitMove = (x, y) => {
   if (socket.connected) {
     socket.emit("player:move", { x, y });

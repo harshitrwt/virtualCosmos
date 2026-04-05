@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { pixiApp } from "./PixiApp";
+import { pixiApp, obstacles } from "./PixiApp";
 import { emitMove } from "../socket/socketClient";
 import { checkProximity } from "./ProximityEngine";
 
@@ -9,7 +9,7 @@ let localPlayerId = null;
 let setConnectedUserCallback = null;
 
 let lastMoveTime = 0;
-const MOVE_THROTTLE = 50;
+const MOVE_THROTTLE = 50; // emit 20 times a sec
 
 const keys = {
   w: false, a: false, s: false, d: false,
@@ -17,6 +17,7 @@ const keys = {
 };
 
 const SPEED = 4;
+const PLAYER_RADIUS = 20;
 
 export function initPlayerManager(userId, onProximityChange) {
   localPlayerId = userId;
@@ -27,6 +28,7 @@ export function initPlayerManager(userId, onProximityChange) {
 
   if (pixiApp) {
     pixiApp.ticker.add(updateLocalPlayer);
+    pixiApp.ticker.add(interpolateRemotePlayers);
   }
 }
 
@@ -35,9 +37,10 @@ export function cleanupPlayerManager() {
   window.removeEventListener("keyup", handleKeyUp);
   if (pixiApp) {
     pixiApp.ticker.remove(updateLocalPlayer);
+    pixiApp.ticker.remove(interpolateRemotePlayers);
   }
   players.clear();
-  sprites.forEach(sprite => sprite.destroy());
+  sprites.forEach(sprite => sprite.destroy(true));
   sprites.clear();
 }
 
@@ -47,6 +50,25 @@ function handleKeyDown(e) {
 
 function handleKeyUp(e) {
   if (keys.hasOwnProperty(e.key)) keys[e.key] = false;
+}
+
+function checkCollision(x, y) {
+  for (const obs of obstacles) {
+    const px = x - PLAYER_RADIUS + 5; // small buffer to ease entering doors
+    const py = y - PLAYER_RADIUS + 5;
+    const pw = PLAYER_RADIUS * 2 - 10;
+    const ph = PLAYER_RADIUS * 2 - 10;
+
+    if (
+      px < obs.x + obs.w &&
+      px + pw > obs.x &&
+      py < obs.y + obs.h &&
+      py + ph > obs.y
+    ) {
+      return true; // Collision
+    }
+  }
+  return false;
 }
 
 function updateLocalPlayer() {
@@ -61,23 +83,53 @@ function updateLocalPlayer() {
   if (keys.d || keys.ArrowRight) dx += SPEED;
 
   if (dx !== 0 || dy !== 0) {
-    localPlayer.x = Math.max(20, Math.min(800 - 20, localPlayer.x + dx));
-    localPlayer.y = Math.max(20, Math.min(600 - 20, localPlayer.y + dy));
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    
+    let newX = Math.max(PLAYER_RADIUS, Math.min(w - PLAYER_RADIUS, localPlayer.x + dx));
+    let newY = Math.max(PLAYER_RADIUS, Math.min(h - PLAYER_RADIUS, localPlayer.y + dy));
 
-    const sprite = sprites.get(localPlayerId);
-    if (sprite) {
-      sprite.x = localPlayer.x;
-      sprite.y = localPlayer.y;
+    if (checkCollision(newX, localPlayer.y)) newX = localPlayer.x;
+    if (checkCollision(localPlayer.x, newY)) newY = localPlayer.y;
+    if (checkCollision(newX, newY)) {
+      newX = localPlayer.x;
+      newY = localPlayer.y;
     }
 
-    const now = Date.now();
-    if (now - lastMoveTime > MOVE_THROTTLE) {
-      emitMove(localPlayer.x, localPlayer.y);
-      lastMoveTime = now;
-    }
+    if (newX !== localPlayer.x || newY !== localPlayer.y) {
+      localPlayer.x = newX;
+      localPlayer.y = newY;
 
-    checkProximity({ id: localPlayerId, ...localPlayer }, players, setConnectedUserCallback);
+      const sprite = sprites.get(localPlayerId);
+      if (sprite) {
+        sprite.x = localPlayer.x;
+        sprite.y = localPlayer.y;
+      }
+
+      const now = Date.now();
+      if (now - lastMoveTime > MOVE_THROTTLE) {
+        emitMove(localPlayer.x, localPlayer.y);
+        lastMoveTime = now;
+      }
+
+      checkProximity({ id: localPlayerId, ...localPlayer }, players, setConnectedUserCallback);
+    }
   }
+}
+
+function interpolateRemotePlayers(time) {
+  const LERP_FACTOR = 0.2; // Smoothness factor
+  players.forEach((player, id) => {
+    if (id !== localPlayerId && player.targetX !== undefined && player.targetY !== undefined) {
+      const sprite = sprites.get(id);
+      if (sprite) {
+        sprite.x += (player.targetX - sprite.x) * LERP_FACTOR;
+        sprite.y += (player.targetY - sprite.y) * LERP_FACTOR;
+        player.x = sprite.x;
+        player.y = sprite.y;
+      }
+    }
+  });
 }
 
 export function updatePlayers(serverPlayers) {
@@ -88,16 +140,14 @@ export function updatePlayers(serverPlayers) {
       createPlayerSprite(id, data);
     } else {
       const player = players.get(id);
-      player.x = data.x;
-      player.y = data.y;
       player.username = data.username;
+      player.avatarStyle = data.avatarStyle;
+      player.avatarSeed = data.avatarSeed;
       
-      if (id !== localPlayerId) {
-        const sprite = sprites.get(id);
-        if (sprite) {
-          sprite.x = data.x;
-          sprite.y = data.y;
-        }
+      const sprite = sprites.get(id);
+      if (sprite && id !== localPlayerId) {
+        player.targetX = data.x;
+        player.targetY = data.y;
       }
     }
   }
@@ -110,30 +160,59 @@ export function updatePlayers(serverPlayers) {
 }
 
 function createPlayerSprite(id, data) {
-  players.set(id, { ...data });
+  players.set(id, { ...data, targetX: data.x, targetY: data.y });
 
   const container = new PIXI.Container();
   container.x = data.x;
   container.y = data.y;
 
-  const graphics = new PIXI.Graphics();
-  const isLocal = id === localPlayerId;
-  const color = isLocal ? 0x60a5fa : 0xf472b6;
-  
-  graphics.beginFill(color);
-  graphics.drawCircle(0, 0, 20);
-  graphics.endFill();
+  // Render a fallback initially
+  const fallback = new PIXI.Graphics();
+  fallback.circle(0, 0, 20);
+  fallback.fill({ color: id === localPlayerId ? 0x60a5fa : 0xf472b6 });
+  container.addChild(fallback);
 
-  const text = new PIXI.Text(data.username, {
-    fontFamily: 'sans-serif',
-    fontSize: 14,
-    fill: 0xffffff,
-    align: 'center',
+  const style = data.avatarStyle || 'avataaars';
+  const seed = data.avatarSeed || data.username || 'default';
+  const spriteUrl = `https://api.dicebear.com/9.x/${style}/png?seed=${seed}&size=44`;
+
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.src = spriteUrl;
+  img.onload = () => {
+    try {
+      const texture = PIXI.Texture.from(img);
+      const sprite = new PIXI.Sprite(texture);
+      sprite.width = 44;
+      sprite.height = 44;
+      sprite.anchor.set(0.5);
+      
+      container.removeChild(fallback);
+      container.addChildAt(sprite, 0); // Behind the text
+    } catch(e) {
+      console.warn("Could not apply loaded image texture in PixiJS", e);
+    }
+  };
+
+  const text = new PIXI.Text({
+    text: data.username,
+    style: {
+      fontFamily: 'sans-serif',
+      fontSize: 14,
+      fill: 0xffffff,
+      align: 'center',
+      dropShadow: {
+        alpha: 0.8,
+        angle: Math.PI / 4,
+        blur: 3,
+        color: 0x000000,
+        distance: 1,
+      }
+    }
   });
-  text.anchor.set(0.5);
-  text.y = -30;
 
-  container.addChild(graphics);
+  text.anchor.set(0.5);
+  text.y = -35;
   container.addChild(text);
 
   pixiApp.stage.addChild(container);
@@ -145,7 +224,7 @@ function removePlayer(id) {
   const sprite = sprites.get(id);
   if (sprite) {
     pixiApp.stage.removeChild(sprite);
-    sprite.destroy();
+    sprite.destroy({ children: true });
     sprites.delete(id);
   }
 }
