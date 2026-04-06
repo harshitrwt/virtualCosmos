@@ -4,14 +4,14 @@ export default function Landing() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#050505] text-neutral-300 flex flex-col font-mono selection:bg-[#10b981]/30 overflow-x-hidden">
-      <nav className="flex justify-between items-center p-6 lg:px-12 border-b border-[#1f2937]">
+    <div className="h-full bg-[#050505] text-neutral-300 flex flex-col font-mono selection:bg-[#10b981]/30 overflow-x-hidden">
+      <nav className="flex justify-between items-center p-6 lg:px-12">
         <div className="text-2xl font-black tracking-tighter text-white">
           VIRTUAL<span className="text-[#10b981]">COSMOS</span>
         </div>
         <button
           onClick={() => navigate("/auth")}
-          className="text-sm font-semibold text-neutral-400 hover:text-white transition-colors uppercase tracking-widest"
+          className="cursor-pointer text-sm font-semibold text-neutral-400 hover:text-white transition-colors uppercase tracking-widest"
         >
           Login
         </button>
@@ -30,15 +30,9 @@ export default function Landing() {
         <div className="flex flex-col sm:flex-row gap-4 z-10 mb-20">
           <button
             onClick={() => navigate("/auth")}
-            className="px-8 py-4 bg-[#10b981] hover:bg-[#059669] text-black rounded-none font-bold text-lg transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] uppercase tracking-wider"
+            className="cursor-pointer px-8 py-4 bg-[#10b981] hover:bg-[#059669] text-black rounded-none font-bold text-lg transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] uppercase tracking-wider"
           >
             Get Started
-          </button>
-          <button
-            onClick={() => navigate("/auth")}
-            className="px-8 py-4 bg-transparent hover:bg-[#1f2937] text-white rounded-none font-bold text-lg transition-all border border-[#27272a] uppercase tracking-wider"
-          >
-            Login
           </button>
         </div>
 

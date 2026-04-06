@@ -9,6 +9,7 @@ import WelcomePopup from "../components/WelcomePopup";
 import { useNavigate } from "react-router-dom";
 import leftImg from "../assets/left.png";
 import rightImg from "../assets/rightpath.png";
+import bgMusic from "../assets/audios/vcosmos.mp3";
 
 export default function Game() {
   const canvasRef = useRef(null);
@@ -71,7 +72,6 @@ export default function Game() {
 
   useEffect(() => {
     return () => {
-      // Intentionally empty to prevent HMR from destroying the Pixi instance!
     };
   }, []);
 
@@ -100,7 +100,7 @@ export default function Game() {
       
       <audio 
         ref={audioRef} 
-        src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_3d1da9a6a8.mp3" 
+        src={bgMusic} 
         loop 
         preload="auto"
       />
@@ -120,9 +120,13 @@ export default function Game() {
           <HUD onlineCount={onlineCount} username={user.username} onLogout={handleLogout} />
         </div>
       </div>
+
+      
       
       {connectedUser && (
+        
         <div className="fixed top-0 right-0 h-full w-[350px] z-50 pointer-events-auto shadow-[-20px_0_40px_-15px_rgba(0,0,0,0.5)]">
+          
           <ChatPanel 
             connectedUser={connectedUser} 
             localUserId={user.userId} 

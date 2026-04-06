@@ -12,7 +12,6 @@ export let obstacles = window.__PIXI_OBS__ || [];
 
 if (import.meta.hot) {
   import.meta.hot.accept((newModule) => {
-    // On hot reload of this file, safely redraw the environment!
     if (window.__PIXI_APP__ && window.__PIXI_ENV__) {
       window.__PIXI_ENV__.removeChildren();
       window.__PIXI_OBS__.length = 0;

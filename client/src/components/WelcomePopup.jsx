@@ -29,10 +29,6 @@ export default function WelcomePopup({ onEnter }) {
                 <li><strong className="text-neutral-200">Explore:</strong> Visit different zones with your team.</li>
               </ul>
             </div>
-            
-            <p className="text-xs uppercase tracking-widest text-[#10b981]/80 font-mono font-bold">
-              [ AUDIO REQUIRED FOR AMBIENT EXPERIENCE ]
-            </p>
           </div>
           
           <div className="mt-8 flex justify-end">
