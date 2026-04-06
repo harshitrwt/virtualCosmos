@@ -57,16 +57,16 @@ function ChatPanel({ connectedUser, localUserId, roomId }) {
   } catch(e) {}
 
   return (
-    <div className="absolute right-0 top-0 bottom-0 w-80 bg-slate-900/95 backdrop-blur-xl border-l border-slate-700 shadow-2xl flex flex-col transition-transform duration-300 ease-out translate-x-0 z-20">
-      <div className="px-6 py-4 flex items-center justify-between border-b border-slate-700 bg-slate-800/50">
+    <div className="absolute right-0 top-0 bottom-0 w-80 bg-[#050505] border-l border-[#27272a] shadow-2xl flex flex-col transition-transform duration-300 ease-out translate-x-0 z-20 font-mono">
+      <div className="px-6 py-4 flex items-center justify-between border-b border-[#27272a] bg-[#0a0a0a]">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center overflow-hidden shrink-0">
+          <div className="w-10 h-10 bg-[#050505] border border-[#27272a] flex items-center justify-center overflow-hidden shrink-0">
             <img src={connectedAvatarSrc} alt="avatar" className="w-full h-full object-cover" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-100">{connectedUser.username}</h3>
-            <span className="text-xs text-green-400 flex items-center">
-              <span className="w-2 h-2 rounded-full bg-green-500 mr-1 animate-pulse"></span> Nearby
+            <h3 className="font-bold text-white uppercase tracking-wider text-sm">{connectedUser.username}</h3>
+            <span className="text-xs text-[#10b981] flex items-center uppercase tracking-widest mt-1">
+              <span className="w-2 h-2 bg-[#10b981] mr-1 animate-pulse"></span> NEARBY
             </span>
           </div>
         </div>
@@ -78,20 +78,20 @@ function ChatPanel({ connectedUser, localUserId, roomId }) {
           return (
             <div key={idx} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
               {!isMine && (
-                <img src={connectedAvatarSrc} alt="avatar" className="w-6 h-6 rounded-full self-end mr-2" />
+                <img src={connectedAvatarSrc} alt="avatar" className="w-6 h-6 self-end mr-2 border border-[#27272a]" />
               )}
-              <div className={`max-w-[75%] px-4 py-2 rounded-2xl ${
+              <div className={`max-w-[75%] px-4 py-2 ${
                 isMine 
-                  ? 'bg-blue-600 text-white rounded-br-none' 
-                  : 'bg-slate-700 text-slate-100 rounded-bl-none'
+                  ? 'bg-[#10b981] text-black border border-[#10b981]' 
+                  : 'bg-[#0a0a0a] border border-[#27272a] text-neutral-300'
               }`}>
-                <p className="text-sm">{msg.text}</p>
-                <span className="text-[10px] opacity-60 mt-1 block">
+                <p className="text-sm font-sans">{msg.text}</p>
+                <span className={`text-[10px] mt-1 block uppercase tracking-widest ${isMine ? 'text-black/60' : 'text-neutral-500'}`}>
                   {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
               </div>
               {isMine && localAvatarSrc && (
-                <img src={localAvatarSrc} alt="me" className="w-6 h-6 rounded-full self-end ml-2" />
+                <img src={localAvatarSrc} alt="me" className="w-6 h-6 self-end ml-2 border border-[#27272a]" />
               )}
             </div>
           );
@@ -99,18 +99,18 @@ function ChatPanel({ connectedUser, localUserId, roomId }) {
         <div ref={messagesEndRef} />
       </div>
 
-      <form onSubmit={handleSend} className="p-4 border-t border-slate-700 bg-slate-800/30">
+      <form onSubmit={handleSend} className="p-4 border-t border-[#27272a] bg-[#0a0a0a]">
         <div className="flex items-center space-x-2">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={`Message ${connectedUser.username}...`}
-            className="flex-1 bg-slate-700/50 border border-slate-600 rounded-full px-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            placeholder={`MESSAGE...`}
+            className="flex-1 bg-[#050505] border border-[#27272a] px-4 py-2 text-sm text-white focus:outline-none focus:border-[#10b981] font-sans"
           />
           <button 
             type="submit" 
-            className="w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-500 flex items-center justify-center text-white transition-colors flex-shrink-0 shadow-lg shadow-blue-500/20"
+            className="w-10 h-10 bg-[#10b981] hover:bg-[#059669] flex items-center justify-center text-black font-bold transition-colors flex-shrink-0"
           >
             &#10148;
           </button>

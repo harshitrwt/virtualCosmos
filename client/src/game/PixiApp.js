@@ -1,4 +1,10 @@
 import * as PIXI from "pixi.js";
+import devRoomImg from '../assets/devroom.png';
+import waitingRoomImg from '../assets/waiting.png';
+import kitchenImg from '../assets/kitchen.png';
+import loungeImg from '../assets/lounge.png';
+import confImg from '../assets/conf.png';
+import teamImg from '../assets/team.png';
 
 export let pixiApp = window.__PIXI_APP__ || null;
 export let environmentContainer = window.__PIXI_ENV__ || null;
@@ -25,7 +31,7 @@ export async function initPixi(canvasContainer) {
       }
       canvasContainer.appendChild(pixiApp.canvas);
     }
-    pixiApp.renderer.resize(1600, 1000); // Forces resize in case old HMR instance was stuck
+    pixiApp.renderer.resize(1600, 1000); 
     return pixiApp;
   }
 
@@ -35,7 +41,7 @@ export async function initPixi(canvasContainer) {
   await pixiApp.init({
     width: 1600,
     height: 1000,
-    backgroundColor: 0x1A1E29,
+    backgroundColor: 0x050505,
     resolution: window.devicePixelRatio || 1,
     autoDensity: true,
   });
@@ -56,11 +62,27 @@ export async function initPixi(canvasContainer) {
   return pixiApp;
 }
 
-function createRoom(x, y, w, h, doorDir, wallColor, floorColor, name) {
-  const floor = new PIXI.Graphics();
-  floor.rect(x, y, w, h);
-  floor.fill({ color: floorColor, alpha: 0.08 });
-  environmentContainer.addChild(floor);
+function createRoom(x, y, w, h, doorDir, wallColor, floorColor, name, bgImg) {
+  if (bgImg) {
+    const sprite = new PIXI.Sprite();
+    sprite.x = x;
+    sprite.y = y;
+    sprite.alpha = 1.0;
+    environmentContainer.addChild(sprite);
+
+    const img = new Image();
+    img.src = bgImg;
+    img.onload = () => {
+      sprite.texture = PIXI.Texture.from(img);
+      sprite.width = w;
+      sprite.height = h;
+    };
+  } else {
+    const floor = new PIXI.Graphics();
+    floor.rect(x, y, w, h);
+    floor.fill({ color: floorColor, alpha: 0.08 });
+    environmentContainer.addChild(floor);
+  }
 
   const wallThick = 2; 
   const doorSize = 90; 
@@ -91,7 +113,7 @@ function createRoom(x, y, w, h, doorDir, wallColor, floorColor, name) {
     addWall(x + (w+doorSize)/2, y + h - wallThick, (w-doorSize)/2, wallThick);
     entryText.text = '▲';
     entryText.x = x + w/2 - entryText.width/2;
-    entryText.y = y + h - 10;
+    entryText.y = y + h - 5;
   } else {
     addWall(x, y + h - wallThick, w, wallThick);
   }
@@ -142,14 +164,14 @@ function createRoom(x, y, w, h, doorDir, wallColor, floorColor, name) {
 export function drawEnvironment() {
   const wallCol = 0xffffff;
   
-  createRoom(100, 50, 1400, 250, 'bottom', wallCol, 0x3b82f6, "DEVELOPMENT AREA");
+  createRoom(100, 50, 1400, 250, 'bottom', wallCol, 0x3b82f6, "DEVELOPMENT AREA", devRoomImg);
   
-  createRoom(100, 380, 250, 300, 'right', wallCol, 0x10b981, "KITCHEN");
-  createRoom(400, 380, 350, 200, 'top', wallCol, 0x06b6d4, "LOUNGE");
-  createRoom(400, 630, 350, 250, 'top', wallCol, 0x8b5cf6, "WAITING AREA");
+  createRoom(100, 380, 250, 300, 'right', wallCol, 0x10b981, "KITCHEN", kitchenImg);
+  createRoom(400, 380, 350, 200, 'top', wallCol, 0x06b6d4, "LOUNGE", loungeImg);
+  createRoom(400, 630, 350, 250, 'top', wallCol, 0x8b5cf6, "WAITING AREA", waitingRoomImg);
   
-  createRoom(900, 380, 600, 250, 'left', wallCol, 0xf59e0b, "CONFERENCE ROOM");
-  createRoom(1100, 680, 400, 200, 'left', wallCol, 0xec4899, "TEAM ROOM");
+  createRoom(900, 380, 600, 250, 'left', wallCol, 0xf59e0b, "CONFERENCE ROOM", confImg);
+  createRoom(1100, 680, 400, 200, 'left', wallCol, 0xec4899, "TEAM ROOM", teamImg);
 
   const decos = new PIXI.Graphics();
   decos.fill({ color: 0xffffff, alpha: 0.1 });

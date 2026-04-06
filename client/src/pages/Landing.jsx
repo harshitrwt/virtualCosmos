@@ -4,39 +4,39 @@ export default function Landing() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col font-sans">
-      <nav className="flex justify-between items-center p-6 lg:px-12 border-b border-slate-800">
-        <div className="text-2xl font-extrabold tracking-tighter text-blue-400">
-          Virtual Cosmos
+    <div className="min-h-screen bg-[#050505] text-neutral-300 flex flex-col font-mono selection:bg-[#10b981]/30 overflow-x-hidden">
+      <nav className="flex justify-between items-center p-6 lg:px-12 border-b border-[#1f2937]">
+        <div className="text-2xl font-black tracking-tighter text-white">
+          VIRTUAL<span className="text-[#10b981]">COSMOS</span>
         </div>
         <button
           onClick={() => navigate("/auth")}
-          className="text-sm font-semibold hover:text-blue-400 transition-colors"
+          className="text-sm font-semibold text-neutral-400 hover:text-white transition-colors uppercase tracking-widest"
         >
           Login
         </button>
       </nav>
 
-      <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-20 relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-20 relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#10b981]/5 rounded-none blur-[120px] pointer-events-none" />
         
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight z-10">
-          Your Virtual Office, <span className="text-blue-500">Reimagined</span>
+        <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tight z-10 text-white uppercase">
+          Your Virtual Office, <br/><span className="text-[#10b981]">Reimagined</span>
         </h1>
-        <p className="text-xl md:text-2xl text-slate-400 mb-10 max-w-2xl z-10 font-light">
+        <p className="text-lg md:text-xl text-neutral-400 mb-10 max-w-2xl z-10 font-normal">
           Experience proximity-based real-time collaboration in a seamless 2D shared space. Connect naturally, just like in the real world.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 z-10 mb-20">
           <button
             onClick={() => navigate("/auth")}
-            className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-full font-bold text-lg transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)]"
+            className="px-8 py-4 bg-[#10b981] hover:bg-[#059669] text-black rounded-none font-bold text-lg transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] uppercase tracking-wider"
           >
             Get Started
           </button>
           <button
             onClick={() => navigate("/auth")}
-            className="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white rounded-full font-bold text-lg transition-all border border-slate-700"
+            className="px-8 py-4 bg-transparent hover:bg-[#1f2937] text-white rounded-none font-bold text-lg transition-all border border-[#27272a] uppercase tracking-wider"
           >
             Login
           </button>
@@ -45,24 +45,24 @@ export default function Landing() {
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl w-full z-10">
           <FeatureCard 
             icon={<MoveIcon />}
-            title="Real-time Movement"
+            title="REAL-TIME MOVEMENT"
             desc="Navigate freely in a shared 2D environment and see colleagues move instantly."
           />
           <FeatureCard 
             icon={<ChatIcon />}
-            title="Proximity Chat"
+            title="PROXIMITY CHAT"
             desc="Conversations spark naturally—chat panels open automatically when you're nearby."
           />
           <FeatureCard 
             icon={<UserIcon />}
-            title="Persistent Identity"
+            title="PERSISTENT IDENTITY"
             desc="Your custom avatar and position are securely saved for your next session."
           />
         </div>
       </main>
 
-      <footer className="text-center p-6 border-t border-slate-800 text-slate-500 text-sm">
-        <p>Virtual Cosmos &copy; {new Date().getFullYear()}. Built with React, PixiJS and Socket.IO.</p>
+      <footer className="text-center p-6 border-t border-[#1f2937] text-neutral-500 text-xs tracking-widest uppercase">
+        <p>&copy; {new Date().getFullYear()} VIRTUAL COSMOS STUDIO. BUILT WITH REACT & PIXIJS.</p>
       </footer>
     </div>
   );
@@ -70,12 +70,12 @@ export default function Landing() {
 
 function FeatureCard({ icon, title, desc }) {
   return (
-    <div className="p-8 rounded-2xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm text-left hover:bg-slate-800 transition-colors">
-      <div className="w-12 h-12 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center mb-6">
+    <div className="p-8 rounded-none bg-[#0a0a0a] border border-[#27272a] text-left hover:border-[#10b981] transition-colors group">
+      <div className="w-12 h-12 rounded-none bg-neutral-900 border border-[#27272a] group-hover:bg-[#10b981]/10 group-hover:border-[#10b981]/30 text-[#10b981] flex items-center justify-center mb-6 transition-colors">
         {icon}
       </div>
-      <h3 className="text-xl font-bold mb-3">{title}</h3>
-      <p className="text-slate-400 leading-relaxed">{desc}</p>
+      <h3 className="text-xl font-bold mb-3 tracking-wide text-white">{title}</h3>
+      <p className="text-neutral-400 leading-relaxed font-sans text-sm">{desc}</p>
     </div>
   );
 }

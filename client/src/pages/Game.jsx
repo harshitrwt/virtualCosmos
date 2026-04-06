@@ -5,13 +5,18 @@ import { initPlayerManager, cleanupPlayerManager, updatePlayers } from "../game/
 import { getRoomId } from "../game/ProximityEngine";
 import HUD from "../components/HUD";
 import ChatPanel from "../components/ChatPanel";
+import WelcomePopup from "../components/WelcomePopup";
 import { useNavigate } from "react-router-dom";
+import leftImg from "../assets/left.png";
+import rightImg from "../assets/rightpath.png";
 
 export default function Game() {
   const canvasRef = useRef(null);
+  const audioRef = useRef(null);
   const [user, setUser] = useState(null);
   const [onlineCount, setOnlineCount] = useState(0);
   const [connectedUser, setConnectedUser] = useState(null);
+  const [hasEntered, setHasEntered] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,20 +64,28 @@ export default function Game() {
     return () => {
       isMounted = false;
       cleanupPlayerManager();
-      // DO NOT call cleanupPixi() here! It causes blank screen on HMR.
       socket.off("players:update");
     };
   }, [user]);
 
-  // Clean up Pixi ONLY when the component is actually unmounted (e.g., logging out)
+
   useEffect(() => {
     return () => {
-      cleanupPixi();
+      // Intentionally empty to prevent HMR from destroying the Pixi instance!
     };
   }, []);
 
+  const handleEnterOffice = () => {
+    setHasEntered(true);
+    if (audioRef.current) {
+      audioRef.current.volume = 0.3; 
+      audioRef.current.play().catch(e => console.log("Audio play failed:", e));
+    }
+  };
+
   const handleLogout = () => {
     disconnectSocket();
+    cleanupPixi();
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/auth");
@@ -81,11 +94,24 @@ export default function Game() {
   if (!user) return null;
 
   return (
-    <div className="fixed inset-0 bg-[#1A1E29]">
-      <div className="absolute inset-0 overflow-auto">
+    <div className="fixed inset-0 bg-[#050505] overflow-hidden">
+      {!hasEntered && <WelcomePopup onEnter={handleEnterOffice} />}
+      
+      
+      <audio 
+        ref={audioRef} 
+        src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_3d1da9a6a8.mp3" 
+        loop 
+        preload="auto"
+      />
+
+      <img src={leftImg} className="absolute left-0 top-0 h-full w-1/2 object-cover object-right opacity-70 pointer-events-none" alt="" />
+      <img src={rightImg} className="absolute right-0 top-0 h-full w-1/2 object-cover object-left opacity-70 pointer-events-none" alt="" />
+
+      <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
         <div 
           ref={canvasRef} 
-          className="relative w-[1600px] h-[1000px] pointer-events-auto"
+          className="relative pointer-events-auto w-full h-full flex items-center justify-center [&>canvas]:max-w-full [&>canvas]:max-h-full [&>canvas]:object-contain"
         />
       </div>
       

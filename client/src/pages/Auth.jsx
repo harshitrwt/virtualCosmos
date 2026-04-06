@@ -101,29 +101,29 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-teal-500/5 rounded-full blur-[100px] pointer-events-none" />
+    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-4 relative overflow-hidden font-mono text-neutral-300">
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#10b981]/5 rounded-none blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#10b981]/5 rounded-none blur-[100px] pointer-events-none" />
 
-      <div className="w-full max-w-md bg-slate-800/80 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-8 shadow-2xl z-10">
+      <div className="w-full max-w-md bg-[#0a0a0a] backdrop-blur-xl border border-[#27272a] rounded-sm p-8 shadow-2xl z-10">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-white tracking-tight mb-2">Virtual Cosmos</h1>
-          <p className="text-slate-400">{isLogin ? "Welcome back to your workspace" : "Create your identity"}</p>
+          <h1 className="text-3xl font-black text-white tracking-tighter mb-2 uppercase">VIRTUAL<span className="text-[#10b981]">COSMOS</span></h1>
+          <p className="text-neutral-500 text-sm tracking-widest uppercase">{isLogin ? "Welcome back" : "Create identity"}</p>
         </div>
 
         {error && <div className="mb-6 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm text-center">{error}</div>}
 
         {step === 1 ? (
           <>
-            <div className="flex bg-slate-900/50 p-1 rounded-xl mb-8">
+            <div className="flex bg-[#050505] border border-[#27272a] p-1 rounded-sm mb-8">
               <button
-                className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${isLogin ? "bg-slate-700 text-white shadow" : "text-slate-400 hover:text-white"}`}
+                className={`flex-1 py-2 rounded-sm text-sm font-bold uppercase tracking-wider transition-all ${isLogin ? "bg-[#10b981] text-black" : "text-neutral-500 hover:text-white"}`}
                 onClick={() => { setIsLogin(true); setError(""); }}
               >
                 Login
               </button>
               <button
-                className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${!isLogin ? "bg-slate-700 text-white shadow" : "text-slate-400 hover:text-white"}`}
+                className={`flex-1 py-2 rounded-sm text-sm font-bold uppercase tracking-wider transition-all ${!isLogin ? "bg-[#10b981] text-black" : "text-neutral-500 hover:text-white"}`}
                 onClick={() => { setIsLogin(false); setError(""); }}
               >
                 Register
@@ -133,35 +133,35 @@ export default function Auth() {
             <form onSubmit={handleAuthSubmit} className="space-y-4">
               {!isLogin && (
                 <div>
-                  <label className="block text-xs font-medium text-slate-400 mb-1 ml-1">Username</label>
+                  <label className="block text-xs font-bold text-neutral-500 mb-1 ml-1 uppercase tracking-wider">Username</label>
                   <input
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-500"
+                    className="w-full bg-[#050505] border border-[#27272a] rounded-sm px-4 py-3 text-white focus:outline-none focus:border-[#10b981] transition-all placeholder:text-neutral-600 font-sans"
                     placeholder="CosmicExplorer"
                   />
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-medium text-slate-400 mb-1 ml-1">Email</label>
+                <label className="block text-xs font-bold text-neutral-500 mb-1 ml-1 uppercase tracking-wider">Email</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-500"
+                  className="w-full bg-[#050505] border border-[#27272a] rounded-sm px-4 py-3 text-white focus:outline-none focus:border-[#10b981] transition-all placeholder:text-neutral-600 font-sans"
                   placeholder="you@domain.com"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-400 mb-1 ml-1">Password</label>
+                <label className="block text-xs font-bold text-neutral-500 mb-1 ml-1 uppercase tracking-wider">Password</label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-500"
+                  className="w-full bg-[#050505] border border-[#27272a] rounded-sm px-4 py-3 text-white focus:outline-none focus:border-[#10b981] transition-all placeholder:text-neutral-600 font-sans"
                   placeholder="••••••••"
                 />
               </div>
@@ -169,17 +169,17 @@ export default function Auth() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-blue-500/20 disabled:opacity-70 mt-4"
+                className="w-full bg-[#10b981] hover:bg-[#059669] text-black font-bold py-3.5 rounded-sm transition-all uppercase tracking-wider disabled:opacity-50 mt-4"
               >
-                {loading ? "Please wait..." : (isLogin ? "Sign In" : "Continue to Avatar")}
+                {loading ? "PLEASE WAIT..." : (isLogin ? "SIGN IN" : "CONTINUE")}
               </button>
             </form>
           </>
         ) : (
           <div className="space-y-6">
             <div className="text-center">
-              <h3 className="text-lg font-bold text-white mb-1">Choose your Avatar</h3>
-              <p className="text-sm text-slate-400 mb-4">Click one to select and create your account.</p>
+              <h3 className="text-lg font-bold text-white mb-1 uppercase tracking-widest">CHOOSE AVATAR</h3>
+              <p className="text-xs text-neutral-500 mb-4 uppercase tracking-wider">Select one to begin.</p>
             </div>
             
             <div className="grid grid-cols-3 gap-4">
@@ -187,12 +187,12 @@ export default function Auth() {
                 <button
                   key={seed}
                   onClick={() => handleRegisterFinal(seed)}
-                  className="bg-slate-900/50 border border-slate-700 hover:border-blue-500 rounded-xl p-2 aspect-square transition-all hover:scale-105 group"
+                  className="bg-[#050505] border border-[#27272a] hover:border-[#10b981] rounded-sm p-2 aspect-square transition-all hover:scale-105 group"
                 >
                   <img 
                     src={`https://api.dicebear.com/9.x/avataaars/svg?seed=${seed}`} 
                     alt="avatar" 
-                    className="w-full h-full object-contain group-hover:drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+                    className="w-full h-full object-contain group-hover:drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]"
                   />
                 </button>
               ))}
@@ -200,15 +200,15 @@ export default function Auth() {
 
             <button
               onClick={generateAvatars}
-              className="w-full py-3 text-sm font-semibold text-slate-300 hover:text-white bg-slate-800 border border-slate-700 rounded-xl transition-colors"
+              className="w-full py-3 text-sm font-bold text-neutral-300 hover:text-white bg-[#050505] border border-[#27272a] hover:border-[#1f2937] rounded-sm transition-colors uppercase tracking-wider"
             >
-              Randomize Options
+              RANDOMIZE OPTIONS
             </button>
             <button
               onClick={() => setStep(1)}
-              className="w-full py-2 text-sm text-slate-500 hover:text-slate-300 transition-colors"
+              className="w-full py-2 text-sm text-neutral-500 hover:text-neutral-300 transition-colors uppercase tracking-wider font-bold"
             >
-              Back
+              BACK
             </button>
           </div>
         )}
