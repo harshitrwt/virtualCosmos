@@ -9,7 +9,8 @@ function ChatPanel({ connectedUser, localUserId, roomId }) {
   useEffect(() => {
     if (roomId) {
       setMessages([]);
-      fetch(`/api/history/${roomId}`)
+      const API_URL = import.meta.env.VITE_API_URL || "";
+      fetch(`${API_URL}/api/history/${roomId}`)
         .then(res => res.json())
         .then(data => setMessages(data.reverse()))
         .catch(err => console.error(err));

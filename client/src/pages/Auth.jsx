@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL || "";
+
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [step, setStep] = useState(1); // 1 = form, 2 = avatar
@@ -37,7 +39,7 @@ export default function Auth() {
     if (isLogin) {
       setLoading(true);
       try {
-        const res = await fetch("/api/auth/login", {
+        const res = await fetch(`${API_URL}/api/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
@@ -66,7 +68,7 @@ export default function Auth() {
     setLoading(true);
     setAvatarSeed(seed);
     try {
-      const res = await fetch("/api/auth/register", {
+      const res = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -81,7 +83,7 @@ export default function Auth() {
       if (!res.ok) throw new Error(data.error);
 
       // Auto login
-      const loginRes = await fetch("/api/auth/login", {
+      const loginRes = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
