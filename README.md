@@ -82,4 +82,4 @@ The frontend and backend should be decoupled for production deployment:
 * The `client` directory produces a static bundle via `npm run build`, which should be hosted on a global CDN.
 * The `server` directory requires a stateful Node.js container that supports continuous WebSockets to maintain player location states.
 
-## Conclusion
+
