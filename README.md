@@ -28,6 +28,9 @@ Virtual Cosmos is a proximity-based real-time 2D shared collaboration environmen
 
 ## Project Architecture
 
+
+
+
 ### 1. Canvas and Rendering (PixiApp.js)
 The environment consists of a *1600x1000* coordinate system rendered via PixiJS. The map uses helper functions to define regions, establish solid obstacle boundaries, set overlay navigational arrows, and bind custom asynchronous image assets. The canvas automatically scales to wide monitors via CSS constraints while preserving its native aspect ratio.
 
@@ -43,19 +46,40 @@ Calculates distances between the local player and remote peers continuously. Onc
 * Node.js (v18 or higher)
 * npm
 
+## Setup 
+```
+git clone <repo url>
+```
+
 ### Server Setup
 1. Open a terminal and navigate to the `server` directory.
+
 2. Run `npm install` to download dependencies.
 3. Start the background process using `node index.js`.
 4. The server runs on port 3001 by default.
+
+   ```
+   cd server
+   npm install
+   node index.js
+   ```
+
 
 ### Client Setup
 1. Open a terminal and navigate to the `client` directory.
 2. Run `npm install` to download dependencies.
 3. Start the Vite development server using `npm run dev`.
 4. The frontend will be accessible at http://localhost:5173.
+ ```
+   cd ..
+   cd client
+   npm install
+   npm run dev
+   ```
 
 ## Deployment Guidelines
 The frontend and backend should be decoupled for production deployment:
 * The `client` directory produces a static bundle via `npm run build`, which should be hosted on a global CDN.
 * The `server` directory requires a stateful Node.js container that supports continuous WebSockets to maintain player location states.
+
+## Conclusion
