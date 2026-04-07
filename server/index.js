@@ -18,8 +18,8 @@ app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT || 3001;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/virtual-cosmos';
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwtkeyforvirtualcosmos';
+const MONGODB_URI = process.env.MONGODB_URI || process.env.MongoDB_URI || 'mongodb://127.0.0.1:27017/virtual-cosmos';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 mongoose.connect(MONGODB_URI)
   .then(() => {
