@@ -4,7 +4,7 @@ export default function Landing() {
   const navigate = useNavigate();
 
   return (
-    <div className="h-full bg-[#050505] text-neutral-300 flex flex-col font-mono selection:bg-[#10b981]/30 overflow-x-hidden">
+    <div className="max-h-screen bg-[#050505] text-neutral-300 flex flex-col font-mono selection:bg-[#10b981]/30 overflow-x-hidden">
       <nav className="flex justify-between items-center p-6 lg:px-12">
         <div className="text-2xl font-black tracking-tighter text-white">
           VIRTUAL<span className="text-[#10b981]">COSMOS</span>

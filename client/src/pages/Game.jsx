@@ -94,9 +94,9 @@ export default function Game() {
   if (!user) return null;
 
   return (
-    <div className="fixed inset-0 bg-[#050505] overflow-hidden">
-      {!hasEntered && <WelcomePopup onEnter={handleEnterOffice} />}
+    <div className="max-h-screen bg-[#050505] overflow-hidden">
       
+      {!hasEntered && <WelcomePopup onEnter={handleEnterOffice} />}
       
       <audio 
         ref={audioRef} 
@@ -109,11 +109,14 @@ export default function Game() {
       <img src={rightImg} className="absolute right-0 top-0 h-full w-1/2 object-cover object-left opacity-70 pointer-events-none" alt="" />
 
       <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+         <h1 className="text-[#08966A] font-600 font-bold m-2 text-4xl absolute bottom-10 left-0">Vcosmos</h1>
+        <h1 className="text-[#08966A] font-600 font-bold m-2 text-4xl absolute bottom-0 left-0">Office ➥</h1>
         <div 
           ref={canvasRef} 
           className="relative pointer-events-auto w-full h-full flex items-center justify-center [&>canvas]:max-w-full [&>canvas]:max-h-full [&>canvas]:object-contain"
         />
       </div>
+
       
       <div className="fixed top-0 left-0 w-full z-40 pointer-events-none">
         <div className="pointer-events-auto">
@@ -134,6 +137,8 @@ export default function Game() {
           />
         </div>
       )}
+
+      
     </div>
   );
 }

@@ -50,7 +50,6 @@ function ChatPanel({ connectedUser, localUserId, roomId }) {
 
   const connectedAvatarSrc = `https://api.dicebear.com/9.x/${connectedUser.avatarStyle || 'avataaars'}/png?seed=${connectedUser.avatarSeed || connectedUser.username}&size=32`;
   
-  // Look up local user from localStorage assuming it was stored
   let localAvatarSrc = null;
   try {
     const u = JSON.parse(localStorage.getItem('user'));
