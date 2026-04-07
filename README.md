@@ -28,7 +28,7 @@ Virtual Cosmos is a proximity-based real-time 2D shared collaboration environmen
 
 ## Project Architecture
 
-
+<img width="4200" height="3000" alt="system_flowchart" src="https://github.com/user-attachments/assets/e3bdef2c-fcf9-4d3c-b2a5-9aca642df634" />
 
 
 ### 1. Canvas and Rendering (PixiApp.js)
